@@ -45,6 +45,11 @@ Item {
   readonly property string windowScope: pluginEntry.scope === "all" ? "all" : "current"
 
   readonly property int rowHeight: Math.max(Style.space(34), Style.font.body + Style.spacing.controlPaddingY * 2)
+  readonly property int hintHeight: Style.space(28)
+  readonly property bool chineseLocale: String(Qt.locale().name).toLowerCase().indexOf("zh") === 0
+  readonly property string scopeHint: chineseLocale
+    ? (windowScope === "current" ? "当前工作区 · 按 ` 切换到全部工作区" : "全部工作区 · 按 ` 切换到当前工作区")
+    : (windowScope === "current" ? "Current workspace · Press ` for all workspaces" : "All workspaces · Press ` for current workspace")
   readonly property int cardWidth: Math.min(Style.space(560), panel.width - Style.gapsOut * 2)
   readonly property int maxCardHeight: panel.height - Style.gapsOut * 2
 
@@ -215,7 +220,7 @@ Item {
       // last row.
       height: Math.min(
         root.maxCardHeight,
-        root.windows.length * root.rowHeight + card.contentTopInset + card.contentBottomInset
+        root.windows.length * root.rowHeight + root.hintHeight + card.contentTopInset + card.contentBottomInset
       )
       anchors.centerIn: parent
       radius: Style.cornerRadius
@@ -228,7 +233,7 @@ Item {
 
         anchors.fill: parent
         anchors.topMargin: card.contentTopInset
-        anchors.bottomMargin: card.contentBottomInset
+        anchors.bottomMargin: card.contentBottomInset + root.hintHeight
         anchors.leftMargin: card.contentLeftInset
         anchors.rightMargin: card.contentRightInset
         clip: true
@@ -249,6 +254,7 @@ Item {
           height: root.rowHeight
           radius: Style.cornerRadius
           color: index === root.selectedIndex ? Color.menu.selectedBackground : "transparent"
+          opacity: modelData.inScope === false ? 0.32 : 1.0
 
           RowLayout {
             anchors.fill: parent
@@ -299,6 +305,23 @@ Item {
             }
           }
         }
+      }
+
+      Text {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: card.contentLeftInset
+        anchors.rightMargin: card.contentRightInset
+        anchors.bottomMargin: card.contentBottomInset
+        height: root.hintHeight
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        text: root.scopeHint
+        color: Color.menu.text
+        opacity: 0.58
+        font.family: Style.font.menuFamily
+        font.pixelSize: Style.font.caption
       }
     }
   }

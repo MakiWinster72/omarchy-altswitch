@@ -26,8 +26,11 @@ Two things make this behave like Windows rather than like Hyprland's
 - Selection is virtual. Focus moves once, when you release `ALT`. Focusing on
   every tap would drag you across workspaces on the way past.
 
-Special and scratchpad workspaces are excluded. By default, only the focused
-workspace is included; cross-workspace switching can be enabled explicitly.
+Special and scratchpad workspaces are excluded. In current-workspace mode,
+all normal windows stay visible, but rows from other workspaces are dimmed and
+skipped by keyboard selection. Global mode makes every row selectable. A hint
+in the system language (Chinese or English) shows the active scope and the
+backtick toggle while the switcher is open.
 
 ## Requirements
 
@@ -75,7 +78,8 @@ omarchy-shell altswitch set showIcons false
 
 Changes apply immediately and persist in the plugin's entry in
 `~/.config/omarchy/shell.json`. While holding `ALT` after opening the switcher,
-pressing the bound scope-toggle key rebuilds the visible list immediately.
+pressing the bound scope-toggle key updates selection and row emphasis
+immediately.
 
 The equivalent manual setting is:
 
