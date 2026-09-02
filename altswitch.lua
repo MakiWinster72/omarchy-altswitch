@@ -25,6 +25,15 @@ if altswitch_scope ~= "current" and altswitch_scope ~= "all" then
   altswitch_scope = "current"
 end
 
+-- The shell setting is pushed into Hyprland through `hyprctl eval`, so scope
+-- changes apply without reloading the compositor configuration.
+_G.__altswitch_set_scope = function(scope)
+  local wanted = tostring(scope or "")
+  if wanted ~= "current" and wanted ~= "all" then return altswitch_scope end
+  altswitch_scope = wanted
+  return altswitch_scope
+end
+
 -- Single-quote a string for the shell. Omarchy's config helpers provide this,
 -- but this file also has to work without them.
 local function shell_quote(value)

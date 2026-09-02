@@ -42,6 +42,7 @@ Item {
     return ({})
   }
   readonly property bool showIcons: pluginEntry.showIcons !== false
+  readonly property string windowScope: pluginEntry.scope === "all" ? "all" : "current"
 
   readonly property int rowHeight: Math.max(Style.space(34), Style.font.body + Style.spacing.controlPaddingY * 2)
   readonly property int cardWidth: Math.min(Style.space(560), panel.width - Style.gapsOut * 2)
@@ -58,15 +59,32 @@ Item {
   }
 
   function setPluginSetting(name, rawValue) {
-    if (name !== "showIcons") return "unknown setting: " + name
-
     const value = String(rawValue || "").trim().toLowerCase()
-    if (value !== "true" && value !== "false") return "showIcons must be true or false"
 
-    const enabled = value === "true"
-    if (!root.updatePluginSetting(name, enabled)) return "unavailable"
-    return String(enabled)
+    if (name === "showIcons") {
+      if (value !== "true" && value !== "false") return "showIcons must be true or false"
+      const enabled = value === "true"
+      if (!root.updatePluginSetting(name, enabled)) return "unavailable"
+      return String(enabled)
+    }
+
+    if (name === "scope") {
+      if (value !== "current" && value !== "all") return "scope must be current or all"
+      if (!root.updatePluginSetting(name, value)) return "unavailable"
+      return value
+    }
+
+    return "unknown setting: " + name
   }
+
+  function syncWindowScope() {
+    Quickshell.execDetached([
+      "hyprctl", "eval", "__altswitch_set_scope(" + JSON.stringify(root.windowScope) + ")"
+    ])
+  }
+
+  onWindowScopeChanged: syncWindowScope()
+  Component.onCompleted: syncWindowScope()
 
   function friendlyAppName(appClass) {
     const raw = String(appClass || "").trim()
@@ -158,6 +176,14 @@ Item {
 
     function set(name: string, value: string): string {
       return root.setPluginSetting(name, value)
+    }
+
+    function scope(value: string): string {
+      const requested = String(value || "").trim().toLowerCase()
+      const wanted = requested === "toggle"
+        ? (root.windowScope === "current" ? "all" : "current")
+        : requested
+      return root.setPluginSetting("scope", wanted)
     }
   }
 

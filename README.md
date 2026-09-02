@@ -41,7 +41,7 @@ No other dependencies, and nothing to install beyond this repository.
 Add the plugin and enable it:
 
 ```bash
-omarchy plugin add https://github.com/Pablo-Merino/omarchy-altswitch.git --enable
+omarchy plugin add https://github.com/MakiWinster72/omarchy-altswitch.git --enable
 ```
 
 Then load the keybindings from `~/.config/hypr/bindings.lua`:
@@ -50,16 +50,8 @@ Then load the keybindings from `~/.config/hypr/bindings.lua`:
 dofile(os.getenv("HOME") .. "/.config/omarchy/plugins/io.github.pablo-merino.altswitch/altswitch.lua")
 ```
 
-The fork defaults to the current workspace. To restore switching across every
-normal workspace, set the scope before loading the plugin:
-
-```lua
-_G.altswitch_scope = "all"
-dofile(os.getenv("HOME") .. "/.config/omarchy/plugins/io.github.pablo-merino.altswitch/altswitch.lua")
-```
-
-Accepted values are `"current"` and `"all"`; invalid values fall back to
-`"current"`. Apply changes with `hyprctl reload`.
+The fork defaults to the current workspace. Scope can be changed at runtime
+and persists in `~/.config/omarchy/shell.json`; no Hyprland reload is needed.
 
 That line replaces Omarchy's four default `ALT`+`TAB` bindings (`cyclenext` and
 `bring_to_top`, in both directions). It unbinds them itself, so no other edit is
@@ -77,6 +69,9 @@ omarchy-shell altswitch set showIcons false
 | --- | --- |
 | `omarchy-shell altswitch set showIcons true` | Show application icons |
 | `omarchy-shell altswitch set showIcons false` | Hide application icons |
+| `omarchy-shell altswitch scope current` | Switch only within the current workspace |
+| `omarchy-shell altswitch scope all` | Switch across every normal workspace |
+| `omarchy-shell altswitch scope toggle` | Toggle between current and all |
 
 Changes apply immediately and persist in the plugin's entry in
 `~/.config/omarchy/shell.json`.
@@ -84,7 +79,7 @@ Changes apply immediately and persist in the plugin's entry in
 The equivalent manual setting is:
 
 ```json
-{ "id": "io.github.pablo-merino.altswitch", "showIcons": true }
+{ "id": "io.github.pablo-merino.altswitch", "showIcons": true, "scope": "current" }
 ```
 
 ## Remove
