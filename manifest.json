@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "id": "io.github.pablo-merino.altswitch",
   "name": "Alt-tab switcher",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Pablo Merino",
-  "description": "Windows-style ALT+TAB window switcher across every workspace, ordered by most recently used.",
+  "description": "Windows-style ALT+TAB window switcher scoped to the current workspace by default, ordered by most recently used.",
   "kinds": [
     "panel"
   ],

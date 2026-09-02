@@ -1,5 +1,5 @@
--- Windows-style ALT+TAB for Hyprland: cycle every window on every workspace,
--- most recently used first. Hold ALT, tap TAB to move down the list, release
+-- Windows-style ALT+TAB for Hyprland: cycle windows on the current workspace
+-- by default, most recently used first. Hold ALT, tap TAB to move down the list, release
 -- ALT to jump to the highlighted window. ALT+SHIFT+TAB moves back up, ESCAPE
 -- cancels.
 --
@@ -17,6 +17,13 @@
 --     would drag you across workspaces on the way past.
 
 local altswitch = { windows = {}, index = 1, active = false }
+
+-- Set `_G.altswitch_scope = "all"` before loading this file to include windows
+-- from every normal workspace. The fork defaults to the focused workspace.
+local altswitch_scope = tostring(rawget(_G, "altswitch_scope") or "current")
+if altswitch_scope ~= "current" and altswitch_scope ~= "all" then
+  altswitch_scope = "current"
+end
 
 -- Single-quote a string for the shell. Omarchy's config helpers provide this,
 -- but this file also has to work without them.
@@ -92,9 +99,13 @@ end
 
 local function altswitch_snapshot()
   local windows = {}
+  local active_workspace = hl.get_active_workspace()
   for _, window in ipairs(hl.get_windows()) do
     local workspace = window.workspace
-    if window.mapped and workspace and not workspace.special then
+    local in_scope = altswitch_scope == "all"
+      or not active_workspace
+      or workspace and workspace.name == active_workspace.name
+    if window.mapped and workspace and not workspace.special and in_scope then
       windows[#windows + 1] = window
     end
   end

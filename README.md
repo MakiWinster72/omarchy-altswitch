@@ -1,7 +1,7 @@
 # Alt-tab switcher
 
-Windows-style `ALT`+`TAB` for [Omarchy](https://omarchy.org/). Cycles every
-window on every workspace, ordered by most recently used.
+Windows-style `ALT`+`TAB` for [Omarchy](https://omarchy.org/). Cycles windows
+on the current workspace, ordered by most recently used.
 
 Hold `ALT`, tap `TAB` to move down the list, release `ALT` to jump to the
 highlighted window.
@@ -26,7 +26,8 @@ Two things make this behave like Windows rather than like Hyprland's
 - Selection is virtual. Focus moves once, when you release `ALT`. Focusing on
   every tap would drag you across workspaces on the way past.
 
-Special and scratchpad workspaces are excluded. Every monitor is included.
+Special and scratchpad workspaces are excluded. By default, only the focused
+workspace is included; cross-workspace switching can be enabled explicitly.
 
 ## Requirements
 
@@ -49,7 +50,16 @@ Then load the keybindings from `~/.config/hypr/bindings.lua`:
 dofile(os.getenv("HOME") .. "/.config/omarchy/plugins/io.github.pablo-merino.altswitch/altswitch.lua")
 ```
 
-Apply it with `hyprctl reload`.
+The fork defaults to the current workspace. To restore switching across every
+normal workspace, set the scope before loading the plugin:
+
+```lua
+_G.altswitch_scope = "all"
+dofile(os.getenv("HOME") .. "/.config/omarchy/plugins/io.github.pablo-merino.altswitch/altswitch.lua")
+```
+
+Accepted values are `"current"` and `"all"`; invalid values fall back to
+`"current"`. Apply changes with `hyprctl reload`.
 
 That line replaces Omarchy's four default `ALT`+`TAB` bindings (`cyclenext` and
 `bring_to_top`, in both directions). It unbinds them itself, so no other edit is
