@@ -74,7 +74,8 @@ omarchy-shell altswitch set showIcons false
 | `omarchy-shell altswitch scope toggle` | Toggle between current and all |
 
 Changes apply immediately and persist in the plugin's entry in
-`~/.config/omarchy/shell.json`.
+`~/.config/omarchy/shell.json`. While holding `ALT` after opening the switcher,
+pressing the bound scope-toggle key rebuilds the visible list immediately.
 
 The equivalent manual setting is:
 

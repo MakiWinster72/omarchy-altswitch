@@ -25,15 +25,6 @@ if altswitch_scope ~= "current" and altswitch_scope ~= "all" then
   altswitch_scope = "current"
 end
 
--- The shell setting is pushed into Hyprland through `hyprctl eval`, so scope
--- changes apply without reloading the compositor configuration.
-_G.__altswitch_set_scope = function(scope)
-  local wanted = tostring(scope or "")
-  if wanted ~= "current" and wanted ~= "all" then return altswitch_scope end
-  altswitch_scope = wanted
-  return altswitch_scope
-end
-
 -- Single-quote a string for the shell. Omarchy's config helpers provide this,
 -- but this file also has to work without them.
 local function shell_quote(value)
@@ -121,6 +112,43 @@ local function altswitch_snapshot()
 
   table.sort(windows, function(a, b) return a.focus_history_id < b.focus_history_id end)
   return windows
+end
+
+-- The shell setting is pushed into Hyprland through `hyprctl eval`. If the
+-- switcher is already open, rebuild its frozen snapshot immediately while
+-- preserving the highlighted window whenever it still belongs to the scope.
+_G.__altswitch_set_scope = function(scope)
+  local wanted = tostring(scope or "")
+  if wanted ~= "current" and wanted ~= "all" then return altswitch_scope end
+  if wanted == altswitch_scope then return altswitch_scope end
+
+  local selected = altswitch.windows[altswitch.index]
+  local selected_address = selected and tostring(selected.address)
+  altswitch_scope = wanted
+
+  if altswitch.active then
+    local windows = altswitch_snapshot()
+    if #windows < 2 then
+      altswitch_teardown()
+      return altswitch_scope
+    end
+
+    local next_index = 1
+    if selected_address then
+      for index, window in ipairs(windows) do
+        if tostring(window.address) == selected_address then
+          next_index = index
+          break
+        end
+      end
+    end
+
+    altswitch.windows = windows
+    altswitch.index = next_index
+    altswitch_send("show", altswitch_payload())
+  end
+
+  return altswitch_scope
 end
 
 local function altswitch_step(delta)
