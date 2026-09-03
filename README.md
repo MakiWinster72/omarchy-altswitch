@@ -15,6 +15,7 @@ highlighted window.
 | `ALT`+`TAB` | Open the switcher and select the previous window |
 | `ALT`+`TAB` again, `ALT` still held | Move one further down the list |
 | `ALT`+`SHIFT`+`TAB` | Move back up the list |
+| Hold `ALT`, release `TAB`, then press `` ` `` | Toggle current-workspace/global scope immediately |
 | Release `ALT` | Switch to the highlighted window |
 | `ALT`+`ESCAPE` | Cancel without switching |
 
@@ -51,7 +52,12 @@ Then load the keybindings from `~/.config/hypr/bindings.lua`:
 
 ```lua
 dofile(os.getenv("HOME") .. "/.config/omarchy/plugins/io.github.pablo-merino.altswitch/altswitch.lua")
+o.bind("ALT + GRAVE", "Toggle Alt-Tab workspace scope", "omarchy-shell altswitch scope toggle")
 ```
+
+`GRAVE` is the backtick key (`` ` ``), usually above `Tab`. Open the switcher
+with `ALT`+`TAB`, keep holding `ALT`, release `TAB`, then press `` ` `` to
+switch the visible list immediately between current-workspace and global mode.
 
 The fork defaults to the current workspace. Scope can be changed at runtime
 and persists in `~/.config/omarchy/shell.json`; no Hyprland reload is needed.
