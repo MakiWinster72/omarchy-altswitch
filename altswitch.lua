@@ -5,7 +5,7 @@
 --
 -- Load it from ~/.config/hypr/bindings.lua:
 --
---   dofile(os.getenv("HOME") .. "/.config/omarchy/plugins/io.github.pablo-merino.altswitch/altswitch.lua")
+--   dofile(os.getenv("HOME") .. "/.config/omarchy/plugins/io.github.makiwinster72.altswitch/altswitch.lua")
 --
 -- This half owns all the state and all the keys. The list is drawn by the
 -- companion shell plugin, which renders what it is told and nothing else.

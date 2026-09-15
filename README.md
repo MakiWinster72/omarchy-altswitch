@@ -51,7 +51,7 @@ omarchy plugin add https://github.com/MakiWinster72/omarchy-altswitch.git --enab
 Then load the keybindings from `~/.config/hypr/bindings.lua`:
 
 ```lua
-dofile(os.getenv("HOME") .. "/.config/omarchy/plugins/io.github.pablo-merino.altswitch/altswitch.lua")
+dofile(os.getenv("HOME") .. "/.config/omarchy/plugins/io.github.makiwinster72.altswitch/altswitch.lua")
 o.bind("ALT + GRAVE", "Toggle Alt-Tab workspace scope", "omarchy-shell altswitch scope toggle")
 ```
 
@@ -92,7 +92,7 @@ immediately.
 The equivalent manual setting is:
 
 ```json
-{ "id": "io.github.pablo-merino.altswitch", "showIcons": true, "scope": "current" }
+{ "id": "io.github.makiwinster72.altswitch", "showIcons": true, "scope": "current" }
 ```
 
 ## Remove
@@ -101,7 +101,7 @@ Delete the `dofile` line from `~/.config/hypr/bindings.lua`, then:
 
 ```bash
 hyprctl reload
-omarchy plugin remove io.github.pablo-merino.altswitch
+omarchy plugin remove io.github.makiwinster72.altswitch
 ```
 
 Omarchy's default `ALT`+`TAB` bindings come back on the next reload.

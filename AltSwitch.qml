@@ -32,7 +32,7 @@ Item {
   property int selectedIndex: 0
   property string activeWindowScope: "current"
 
-  readonly property string pluginId: String((manifest && manifest.id) || "io.github.pablo-merino.altswitch")
+  readonly property string pluginId: String((manifest && manifest.id) || "io.github.makiwinster72.altswitch")
   readonly property var pluginEntry: {
     const config = shell ? shell.shellConfig : null
     const plugins = config && Array.isArray(config.plugins) ? config.plugins : []
