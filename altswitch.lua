@@ -16,7 +16,7 @@
 --   * Selection is virtual. Focus moves once, on commit. Focusing on every tap
 --     would drag you across workspaces on the way past.
 
-local altswitch = { windows = {}, candidates = {}, index = 1, active = false, workspace_name = "" }
+local altswitch = { windows = {}, candidates = {}, index = 1, active = false, workspace_name = "", effective_scope = "current" }
 
 -- Set `_G.altswitch_scope = "all"` before loading this file to include windows
 -- from every normal workspace. The fork defaults to the focused workspace.
@@ -49,11 +49,11 @@ local function altswitch_json_string(value)
   return '"' .. escaped .. '"'
 end
 
-local function altswitch_candidates()
+local function altswitch_candidates(scope)
   local candidates = {}
   for _, window in ipairs(altswitch.windows) do
     local workspace = window.workspace
-    if altswitch_scope == "all" or not workspace
+    if scope == "all" or not workspace
       or workspace.name == altswitch.workspace_name then
       candidates[#candidates + 1] = window
     end
@@ -74,7 +74,7 @@ local function altswitch_payload()
   local rows = {}
   for _, window in ipairs(altswitch.windows) do
     local workspace_name = window.workspace and window.workspace.name or ""
-    local in_scope = altswitch_scope == "all" or workspace_name == altswitch.workspace_name
+    local in_scope = altswitch.effective_scope == "all" or workspace_name == altswitch.workspace_name
     rows[#rows + 1] = string.format(
       '{"title":%s,"appClass":%s,"workspace":%s,"inScope":%s}',
       altswitch_json_string(window.title),
@@ -88,7 +88,7 @@ local function altswitch_payload()
     '{"windows":[%s],"index":%d,"scope":%s}',
     table.concat(rows, ","),
     display_index(altswitch.candidates[altswitch.index]),
-    altswitch_json_string(altswitch_scope)
+    altswitch_json_string(altswitch.effective_scope)
   )
 end
 
@@ -97,6 +97,7 @@ local function altswitch_teardown()
   altswitch.windows = {}
   altswitch.candidates = {}
   altswitch.workspace_name = ""
+  altswitch.effective_scope = altswitch_scope
   altswitch_send("hide")
 end
 
@@ -141,7 +142,12 @@ _G.__altswitch_set_scope = function(scope)
   altswitch_scope = wanted
 
   if altswitch.active then
-    altswitch.candidates = altswitch_candidates()
+    altswitch.effective_scope = wanted
+    altswitch.candidates = altswitch_candidates(wanted)
+    if wanted == "current" and #altswitch.candidates < 2 then
+      altswitch.effective_scope = "all"
+      altswitch.candidates = altswitch_candidates("all")
+    end
     if #altswitch.candidates < 2 then
       altswitch_teardown()
       return altswitch_scope
@@ -172,7 +178,14 @@ local function altswitch_step(delta)
   local active_workspace = hl.get_active_workspace()
   altswitch.workspace_name = active_workspace and active_workspace.name or ""
   altswitch.windows = altswitch_snapshot()
-  altswitch.candidates = altswitch_candidates()
+  local current_candidates = altswitch_candidates("current")
+  altswitch.effective_scope = altswitch_scope
+  if altswitch_scope == "current" and #current_candidates < 2 then
+    -- A workspace with fewer than two windows cannot switch locally; fall back
+    -- to the global list without changing the user's persisted preference.
+    altswitch.effective_scope = "all"
+  end
+  altswitch.candidates = altswitch_candidates(altswitch.effective_scope)
   if #altswitch.candidates < 2 then return end
 
   -- Entry 1 is the focused window, so one tap lands on entry 2. Reverse wraps

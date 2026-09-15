@@ -30,6 +30,7 @@ Item {
   property bool opened: false
   property var windows: []
   property int selectedIndex: 0
+  property string activeWindowScope: "current"
 
   readonly property string pluginId: String((manifest && manifest.id) || "io.github.pablo-merino.altswitch")
   readonly property var pluginEntry: {
@@ -48,8 +49,8 @@ Item {
   readonly property int hintHeight: Style.space(28)
   readonly property bool chineseLocale: String(Qt.locale().name).toLowerCase().indexOf("zh") === 0
   readonly property string scopeHint: chineseLocale
-    ? (windowScope === "current" ? "当前工作区 · 按 ` 切换到全部工作区" : "全部工作区 · 按 ` 切换到当前工作区")
-    : (windowScope === "current" ? "Current workspace · Press ` for all workspaces" : "All workspaces · Press ` for current workspace")
+    ? (activeWindowScope === "current" ? "当前工作区 · 按 ` 切换到全部工作区" : "全部工作区 · 按 ` 切换到当前工作区")
+    : (activeWindowScope === "current" ? "Current workspace · Press ` for all workspaces" : "All workspaces · Press ` for current workspace")
   readonly property int cardWidth: Math.min(Style.space(560), panel.width - Style.gapsOut * 2)
   readonly property int maxCardHeight: panel.height - Style.gapsOut * 2
 
@@ -132,6 +133,7 @@ Item {
 
     root.windows = payload.windows || []
     root.selectedIndex = payload.index || 0
+    root.activeWindowScope = payload.scope === "all" ? "all" : "current"
     root.opened = root.windows.length > 0
   }
 

@@ -59,8 +59,10 @@ o.bind("ALT + GRAVE", "Toggle Alt-Tab workspace scope", "omarchy-shell altswitch
 with `ALT`+`TAB`, keep holding `ALT`, release `TAB`, then press `` ` `` to
 switch the visible list immediately between current-workspace and global mode.
 
-The fork defaults to the current workspace. Scope can be changed at runtime
-and persists in `~/.config/omarchy/shell.json`; no Hyprland reload is needed.
+The fork defaults to the current workspace when it has at least two windows.
+With zero or one window there, it falls back to the global list automatically.
+Scope can be changed at runtime and persists in `~/.config/omarchy/shell.json`;
+no Hyprland reload is needed.
 
 That line replaces Omarchy's four default `ALT`+`TAB` bindings (`cyclenext` and
 `bring_to_top`, in both directions). It unbinds them itself, so no other edit is
