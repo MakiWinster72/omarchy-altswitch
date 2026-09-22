@@ -44,6 +44,7 @@ Item {
   }
   readonly property bool showIcons: pluginEntry.showIcons !== false
   readonly property string windowScope: pluginEntry.scope === "all" ? "all" : "current"
+  property string requestedWindowScope: windowScope
 
   readonly property int rowHeight: Math.max(Style.space(34), Style.font.body + Style.spacing.controlPaddingY * 2)
   readonly property int hintHeight: Style.space(28)
@@ -77,9 +78,9 @@ Item {
     if (name === "scope") {
       if (value !== "current" && value !== "all") return "scope must be current or all"
       if (!root.updatePluginSetting(name, value)) return "unavailable"
-      // shellConfig updates asynchronously; keep a local value so consecutive
-      // toggle commands do not repeatedly read the previous configuration.
-      root.activeWindowScope = value
+      // shellConfig updates asynchronously; keep the requested scope separate
+      // from the active payload so consecutive toggles remain deterministic.
+      root.requestedWindowScope = value
       root.syncWindowScope(value)
       return value
     }
@@ -96,7 +97,10 @@ Item {
     ])
   }
 
-  onWindowScopeChanged: syncWindowScope()
+  onWindowScopeChanged: {
+    requestedWindowScope = windowScope
+    syncWindowScope()
+  }
   Component.onCompleted: syncWindowScope()
 
   function friendlyAppName(appClass) {
@@ -195,7 +199,7 @@ Item {
     function scope(value: string): string {
       const requested = String(value || "").trim().toLowerCase()
       const wanted = requested === "toggle"
-        ? (root.activeWindowScope === "current" ? "all" : "current")
+        ? (root.requestedWindowScope === "current" ? "all" : "current")
         : requested
       return root.setPluginSetting("scope", wanted)
     }

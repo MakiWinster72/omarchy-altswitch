@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "io.github.makiwinster72.altswitch",
   "name": "Alt-tab switcher",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "author": "MakiWinster",
   "description": "Windows-style ALT+TAB window switcher that falls back to all workspaces when the current workspace has fewer than two windows.",
   "kinds": [
