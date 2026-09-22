@@ -49,8 +49,8 @@ Item {
   readonly property int hintHeight: Style.space(28)
   readonly property bool chineseLocale: String(Qt.locale().name).toLowerCase().indexOf("zh") === 0
   readonly property string scopeHint: chineseLocale
-    ? (activeWindowScope === "current" ? "当前工作区 · 按 ` 切换到全部工作区" : "全部工作区 · 按 ` 切换到当前工作区")
-    : (activeWindowScope === "current" ? "Current workspace · Press ` for all workspaces" : "All workspaces · Press ` for current workspace")
+    ? (activeWindowScope === "current" ? "当前工作区 · 按 A 切换到全部工作区" : "全部工作区 · 按 A 切换到当前工作区")
+    : (activeWindowScope === "current" ? "Current workspace · Press A for all workspaces" : "All workspaces · Press A for current workspace")
   readonly property int cardWidth: Math.min(Style.space(560), panel.width - Style.gapsOut * 2)
   readonly property int maxCardHeight: panel.height - Style.gapsOut * 2
 
