@@ -15,7 +15,7 @@ highlighted window.
 | `ALT`+`TAB` | Open the switcher and select the previous window |
 | `ALT`+`TAB` again, `ALT` still held | Move one further down the list |
 | `ALT`+`SHIFT`+`TAB` | Move back up the list |
-| Hold `ALT`, release `TAB`, then press `A` | Toggle current-workspace/global scope immediately |
+| Hold `ALT`, release `TAB`, then press `` ` `` | Toggle current-workspace/global scope immediately |
 | Release `ALT` | Switch to the highlighted window |
 | `ALT`+`ESCAPE` | Cancel without switching |
 
@@ -31,7 +31,7 @@ Special and scratchpad workspaces are excluded. In current-workspace mode,
 all normal windows stay visible, but rows from other workspaces are dimmed and
 skipped by keyboard selection. Global mode makes every row selectable. A hint
 in the system language (Chinese or English) shows the active scope and the
-`A` toggle while the switcher is open.
+backtick toggle while the switcher is open.
 
 ## Requirements
 
@@ -52,12 +52,12 @@ Then load the keybindings from `~/.config/hypr/bindings.lua`:
 
 ```lua
 dofile(os.getenv("HOME") .. "/.config/omarchy/plugins/io.github.makiwinster72.altswitch/altswitch.lua")
-o.bind("ALT + A", "Toggle Alt-Tab workspace scope", "omarchy-shell altswitch scope toggle")
+o.bind("ALT + GRAVE", "Toggle Alt-Tab workspace scope", "omarchy-shell altswitch scope toggle")
 ```
 
-Open the switcher with `ALT`+`TAB`, keep holding `ALT`, release `TAB`, then
-press `A` to switch the visible list immediately between current-workspace and
-global mode.
+`GRAVE` is the backtick key (`` ` ``), usually above `Tab`. Open the switcher
+with `ALT`+`TAB`, keep holding `ALT`, release `TAB`, then press `` ` `` to
+switch the visible list immediately between current-workspace and global mode.
 
 The fork defaults to the current workspace when it has at least two windows.
 With zero or one window there, it falls back to the global list automatically.
