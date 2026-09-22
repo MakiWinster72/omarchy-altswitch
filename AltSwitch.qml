@@ -77,15 +77,21 @@ Item {
     if (name === "scope") {
       if (value !== "current" && value !== "all") return "scope must be current or all"
       if (!root.updatePluginSetting(name, value)) return "unavailable"
+      // shellConfig updates asynchronously; use the requested value so a scope
+      // toggle also refreshes a switcher that is already open.
+      root.syncWindowScope(value)
       return value
     }
 
     return "unknown setting: " + name
   }
 
-  function syncWindowScope() {
+  function syncWindowScope(scope) {
+    const wanted = scope === undefined
+      ? root.windowScope
+      : (scope === "all" ? "all" : "current")
     Quickshell.execDetached([
-      "hyprctl", "eval", "__altswitch_set_scope(" + JSON.stringify(root.windowScope) + ")"
+      "hyprctl", "eval", "__altswitch_set_scope(" + JSON.stringify(wanted) + ")"
     ])
   }
 
