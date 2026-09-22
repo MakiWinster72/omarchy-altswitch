@@ -77,8 +77,9 @@ Item {
     if (name === "scope") {
       if (value !== "current" && value !== "all") return "scope must be current or all"
       if (!root.updatePluginSetting(name, value)) return "unavailable"
-      // shellConfig updates asynchronously; use the requested value so a scope
-      // toggle also refreshes a switcher that is already open.
+      // shellConfig updates asynchronously; keep a local value so consecutive
+      // toggle commands do not repeatedly read the previous configuration.
+      root.activeWindowScope = value
       root.syncWindowScope(value)
       return value
     }
@@ -194,7 +195,7 @@ Item {
     function scope(value: string): string {
       const requested = String(value || "").trim().toLowerCase()
       const wanted = requested === "toggle"
-        ? (root.windowScope === "current" ? "all" : "current")
+        ? (root.activeWindowScope === "current" ? "all" : "current")
         : requested
       return root.setPluginSetting("scope", wanted)
     }
